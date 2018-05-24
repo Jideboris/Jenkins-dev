@@ -1,0 +1,6 @@
+---
+configmaps:
+  ips_url: https://cpsoa-webservice-deva.bpweb.bp.com/reports.asmx?WSDL
+  ips_user: boats5
+  auth_user: AUTHUSER123 
+

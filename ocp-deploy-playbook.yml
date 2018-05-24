@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  roles:
+    - ocp-common
+
+    - { role: ocp-create-configmap, configMapName: '{{dcName}}-config', configMapVersion: "{{configVersion}}" }
+    - { role: ocp-create-secret, secretName: '{{dcName}}-secret', secretVersion: "{{configVersion}}" }
+
+    # - { role: ocp-create-secret-from-file, secretName: '${primaryArtifactId}-application-config-secret', secretVersion: "{{configVersion}}", secretKeyName: 'application.properties' }
+
+    # Needs to be updated when ocp config is pushed to Artifactory.
+    # - { role: ocp-process-apply-template, templateUrl: "<TODO: insert base Artifactory URL>/${primaryArtifactId}-ocp-config/{{appVersion}}/${primaryArtifactId}-ocp-config-{{appVersion}}-kubernetes-run.json", templateParamOverrides: "NUM_REPLICAS={{numReplicas}}" }
+    - { role: ocp-process-apply-template, templateUrl: "../ocp-deploy-template.yml", templateParamOverrides: "NUM_REPLICAS={{numReplicas}} IS_PULL_NAMESPACE={{bldNamespace}} NAME={{dcName}} IS_TAG={{isTag}} CONFIGVERSION={{configVersion}} SECUREROUTE={{secureRoute}}" }
+
+    # START Secure Route
+    # - { role: ocp-create-secure-route, routeName: '${primaryArtifactId}', targetServiceName: "${primaryArtifactId}-{{ocpVersion}}" }
+    # END Secure Route
+
+    - ocp-rollout
